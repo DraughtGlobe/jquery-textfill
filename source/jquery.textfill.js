@@ -12,6 +12,8 @@
  * @license   MIT License
  * @homepage  https://github.com/jquery-textfill/jquery-textfill
  * @example   http://jquery-textfill.github.io/jquery-textfill/index.html
+ *
+ * ( This is an unmerged fork version from: https://github.com/DraughtGlobe/jquery-textfill )
  */
 ; (function($) {
 
