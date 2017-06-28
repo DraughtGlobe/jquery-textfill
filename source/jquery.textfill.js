@@ -124,8 +124,6 @@
          */
         function _sizing(prefix, ourText, func, max, maxHeight, maxWidth, minFontPixels, maxFontPixels, newLineHeightPerPixel) {
 
-            console.log("SIZING FUNCTION CALLED", ourText);
-            console.log("==========================================================")
             _debug_sizing(
                 prefix, ourText,
                 maxHeight, maxWidth,
@@ -134,9 +132,7 @@
 
             var fontSize = maxFontPixels;
             var fontSizeFound = false;
-            console.log('MIN:'+minFontPixels);
             do {
-                console.log('Setting font-size to' + fontSize);
                 ourText.css('font-size', fontSize+'px');
 
                 if(newLineHeightPerPixel > 0) {
@@ -148,14 +144,10 @@
 
                 if (func.call(ourText) <= max) {
                     fontSizeFound = true;
-                    console.log('size low enough');
                     break;
-                } else {
-                    console.log('nope. current size ')
                 }
 
                 fontSize = Math.floor((minFontPixels + fontSize) / 2);
-                console.log('check new font-size: '+ fontSize);
 
             } while(minFontPixels <= (fontSize - 1));
 
@@ -180,17 +172,10 @@
             // $(this) means the parent container
             var ourText = $(Opts.innerTag + ':visible:first', this);
 
-            console.log('###oldHeight'+$(this).height());
-
             // Will resize to this dimensions.
             // Use explicit dimensions when specified
             var maxHeight = Opts.explicitHeight || $(this).height();
             var maxWidth  = Opts.explicitWidth  || $(this).width();
-
-            console.log('ourText: ', ourText);
-            console.log('ourText font-size: ', ourText.css('font-size'));
-            console.log('ourTextOlHeight: ', ourText.height());
-            console.log('oldHeight: '+ $(this).height());
 
             var oldFontSize = ourText.css('font-size');
 
@@ -199,10 +184,6 @@
                 ourTextLineHeight = 1;
             }
             var lineHeightPerPixel  = parseFloat(ourTextLineHeight) / parseFloat(oldFontSize);
-            console.log('#####'+ oldFontSize)
-            console.log('#####'+ ourText.css('line-height'));
-            console.log('#####'+ lineHeightPerPixel);
-
 
             _debug('[TextFill] Inner text: ' + ourText.text());
             _debug('[TextFill] All options: ', Opts);
@@ -228,7 +209,6 @@
             var fontSizeHeight = undefined;
 
             if (! Opts.widthOnly)
-                console.log('maxFontPixels', maxFontPixels, Opts.maxFontPixels);
             fontSizeHeight = _sizing(
                 'Height', ourText,
                 $.fn.height, maxHeight,
@@ -266,8 +246,6 @@
             else {
                 var fontSizeFinal = Math.min(fontSizeHeight, fontSizeWidth);
 
-                console.log('FINALLUUU BATTLUEE:' + fontSizeFinal, 'from HEIGHT: '+ fontSizeHeight, 'from WIDTH:' + fontSizeWidth);
-
                 ourText.css('font-size', fontSizeFinal);
 
                 if (Opts.changeLineHeight)
@@ -275,8 +253,6 @@
                         'line-height',
                         (lineHeightPerPixel * fontSizeFinal) + 'px'
                     );
-
-                console.log('#####Setting new line-height, from old line-height,' + (lineHeightPerPixel * fontSizeFinal) + '#' + ourText.parent().css('line-height' )+ '#fontsizefinal'+fontSizeFinal);
             }
 
             _debug(
@@ -289,13 +265,6 @@
             // We weren't supposed to exceed the original size
             if ((ourText.width()  > maxWidth) ||
                 (ourText.height() > maxHeight && !Opts.widthOnly)) {
-
-                console.log('an oops occured');
-                console.log(ourText);
-                console.log(ourText.width());
-                console.log(maxWidth);
-                console.log(ourText.height());
-                console.log(maxHeight);
 
                 ourText.css('font-size', oldFontSize);
 
