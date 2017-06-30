@@ -160,6 +160,47 @@
             return maxFontPixels;
         }
 
+        function getLineHeightInPixelsPerFontSize(line_height, font_size) {
+
+            if((line_height+"").substr(-2) === 'px') {
+                line_height = parseFloat(line_height.substr(0, line_height.length - 2)) / parseFloat(font_size);
+            } else {
+                if(isNaN(line_height)) {
+                    line_height = 1
+                }
+            }
+
+            return line_height
+
+        }
+
+        function getMaxHeight(element) {
+
+            if(Opts.explicitHeight) {
+                return Opts.explicitHeight;
+            }
+
+            var max_height = parseFloat(element.css('max-height'));
+            if( !isNaN(max_height) && max_height > element.height()) {
+                return max_height;
+            }
+
+            return element.height();
+        }
+
+        function getMaxWidth(element) {
+            if(Opts.explicitWidth) {
+                return Opts.explicitWidth;
+            }
+
+            var max_width = parseFloat(element.css('max-width'));
+            if( !isNaN(max_width) && max_width > element.width()) {
+                return max_width;
+            }
+
+            return element.width();
+        }
+
         // _______ _______ _______  ______ _______
         // |______    |    |_____| |_____/    |
         // ______|    |    |     | |    \_    |
@@ -176,16 +217,13 @@
 
             // Will resize to this dimensions.
             // Use explicit dimensions when specified
-            var maxHeight = Opts.explicitHeight || $(this).height();
-            var maxWidth  = Opts.explicitWidth  || $(this).width();
+            var maxHeight = getMaxHeight($(this));
+            var maxWidth  = getMaxWidth($(this));
 
             var oldFontSize = ourText.css('font-size');
 
             var ourTextLineHeight = ourText.css('line-height');
-            if(isNaN(ourTextLineHeight)) {
-                ourTextLineHeight = 1;
-            }
-            var lineHeightPerPixel  = parseFloat(ourTextLineHeight) / parseFloat(oldFontSize);
+            var lineHeightPerPixel = getLineHeightInPixelsPerFontSize(ourTextLineHeight, oldFontSize);
 
             _debug('[TextFill] Inner text: ' + ourText.text());
             _debug('[TextFill] All options: ', Opts);
@@ -211,13 +249,13 @@
             var fontSizeHeight = undefined;
 
             if (! Opts.widthOnly)
-            fontSizeHeight = _sizing(
-                'Height', ourText,
-                $.fn.height, maxHeight,
-                maxHeight, maxWidth,
-                minFontPixels, maxFontPixels,
-                Opts.changeLineHeight?lineHeightPerPixel:0
-            );
+                fontSizeHeight = _sizing(
+                    'Height', ourText,
+                    $.fn.height, maxHeight,
+                    maxHeight, maxWidth,
+                    minFontPixels, maxFontPixels,
+                    Opts.changeLineHeight?lineHeightPerPixel:0
+                );
 
             // 2. Calculate which `font-size` would
             //    be best for the Width
@@ -239,22 +277,25 @@
                     'white-space': 'nowrap'
                 });
 
-                if (Opts.changeLineHeight)
+                if (Opts.changeLineHeight) {
                     ourText.parent().css(
                         'line-height',
                         (lineHeightPerPixel * fontSizeWidth + 'px')
                     );
+                }
             }
             else {
                 var fontSizeFinal = Math.min(fontSizeHeight, fontSizeWidth);
 
                 ourText.css('font-size', fontSizeFinal);
 
-                if (Opts.changeLineHeight)
+                if (Opts.changeLineHeight) {
                     ourText.parent().css(
                         'line-height',
                         (lineHeightPerPixel * fontSizeFinal) + 'px'
                     );
+                }
+
             }
 
             _debug(
